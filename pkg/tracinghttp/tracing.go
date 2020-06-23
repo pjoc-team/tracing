@@ -1,4 +1,4 @@
-package client
+package tracinghttp
 
 import (
 	"github.com/jinzhu/copier"
@@ -11,6 +11,7 @@ type TracingHttp struct {
 }
 
 func (t *TracingHttp) RoundTrip(request *http.Request) (*http.Response, error) {
+
 }
 
 func NewHttpClient(client *http.Client) *http.Client {
