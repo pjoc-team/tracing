@@ -18,7 +18,7 @@ func TracingMqProducer(ctx context.Context, topic string, data []byte) *TraceMqD
 		opentracing.TextMap,
 		carriers)
 	if err != nil {
-		tracinglogger.ContextLog(nctx).Errorf("TracingMqProducer inject to TextMap err %v", err)
+		logger.ContextLog(nctx).Errorf("TracingMqProducer inject to TextMap err %v", err)
 	}
 	return &TraceMqData{
 		Carriers: carriers,

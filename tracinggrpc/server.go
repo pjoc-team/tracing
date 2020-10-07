@@ -19,7 +19,7 @@ func TracingServerInterceptor() grpc.UnaryServerInterceptor {
 		spanContext, err := tracer.Extract(opentracing.TextMap, MDReaderWriter{md})
 		var span opentracing.Span
 		if err != nil && err != opentracing.ErrSpanContextNotFound {
-			tracinglogger.Log().Errorf("extract from metadata err: %v", err)
+			logger.Log().Errorf("extract from metadata err: %v", err)
 		} else {
 			span = tracer.StartSpan(
 				info.FullMethod,

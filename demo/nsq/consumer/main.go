@@ -37,7 +37,7 @@ func (c *NsqConsumer) HandleMessage(msg *nsq.Message) error {
 		fmt.Println(err)
 		return err
 	}
-	log := tracinglogger.ContextLog(tracing.BuildContextByCarrier(data.Carriers, "mq_consumer", data.Topic))
+	log := logger.ContextLog(tracing.BuildContextByCarrier(data.Carriers, "mq_consumer", data.Topic))
 	log.Infof("pull carriers:%v topic:%s data:%s", data.Carriers, data.Topic, data.Data)
 	log.Info("===================")
 

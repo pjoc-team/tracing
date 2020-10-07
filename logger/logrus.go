@@ -1,4 +1,4 @@
-package tracinglogger
+package logger
 
 import (
 	"bytes"

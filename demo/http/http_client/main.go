@@ -14,12 +14,12 @@ import (
 func main() {
 	err := tracing.InitOnlyTracingLog("http_client")
 	if err != nil {
-		tracinglogger.Log().Fatal(err)
+		logger.Log().Fatal(err)
 	}
-	tracinglogger.SetLevel(tracinglogger.DebugLevel)
-	tracinglogger.SetReportCallerLevel(tracinglogger.InfoLevel)
+	logger.SetLevel(logger.DebugLevel)
+	logger.SetReportCallerLevel(logger.InfoLevel)
 	tracing.HandleFunc(func(ctx context.Context) {
-		log := tracinglogger.ContextLog(ctx)
+		log := logger.ContextLog(ctx)
 		log.Debug("start client")
 		header := make(map[string]string)
 		header[tracing.HttpHeaderKeyXRequestID] = time.Now().Format("20060102150405")
@@ -33,7 +33,7 @@ func main() {
 		}
 		header["Content-Type"] = "application/json"
 		sctx, res, err = tracinghttp.PostDo(ctx, http.DefaultClient, "http://localhost:8082/info", header, bytes.NewReader([]byte("{\"info\":\"hello trace3\"}")))
-		sctxLog := tracinglogger.ContextLog(sctx)
+		sctxLog := logger.ContextLog(sctx)
 		if err != nil {
 			sctxLog.Errorf("%v", err)
 		} else {
@@ -41,7 +41,7 @@ func main() {
 			sctxLog.Infof("%s", result)
 		}
 		tracing.Forward(sctx, "testForward", func(ctx context.Context) {
-			log = tracinglogger.ContextLog(ctx)
+			log = logger.ContextLog(ctx)
 			log.Println("test testForward")
 		})
 

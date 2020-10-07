@@ -14,5 +14,5 @@ func ExampleTracingServerInterceptor() {
 	opts = append(opts, grpc.UnaryInterceptor(TracingServerInterceptor()))
 	grpc.NewServer(opts...)
 	//还可以设置grpc log
-	grpclog.SetLoggerV2(tracinglogger.Log())
+	grpclog.SetLoggerV2(logger.Log())
 }

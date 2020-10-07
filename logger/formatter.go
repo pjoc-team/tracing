@@ -1,4 +1,4 @@
-package tracinglogger
+package logger
 
 type FormatType int32
 

@@ -15,7 +15,7 @@ func TracingMqConsumer(ctx context.Context, tarceMqData TraceMqData) context.Con
 		tarceMqData.Carriers,
 	)
 	if err != nil && err != opentracing.ErrSpanContextNotFound {
-		tracinglogger.Log().Errorf("TracingMqConsumer extract error: %s ", err.Error())
+		logger.Log().Errorf("TracingMqConsumer extract error: %s ", err.Error())
 		return ctx
 	} else {
 		span := tracer.StartSpan(

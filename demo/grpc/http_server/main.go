@@ -11,7 +11,7 @@ import (
 func main() {
 	tracing.InitOnlyTracingLog("http_server")
 	tracinghttp.HandleFunc("/sayHello", func(w http.ResponseWriter, r *http.Request) {
-		log := tracinglogger.ContextLog(r.Context())
+		log := logger.ContextLog(r.Context())
 		log.Infoln("hello:8084")
 		w.Write([]byte("i am ok"))
 	})

@@ -24,7 +24,7 @@ func TracingClientInterceptor() grpc.UnaryClientInterceptor {
 		mdWriter := MDReaderWriter{md}
 		err := tracer.Inject(span.Context(), opentracing.TextMap, mdWriter)
 		if err != nil {
-			tracinglogger.ContextLog(ctx).Errorf("inject to metadata err %v", err)
+			logger.ContextLog(ctx).Errorf("inject to metadata err %v", err)
 		}
 		ctx = metadata.NewOutgoingContext(ctx, md)
 		err = invoker(ctx, method, req, reply, cc, opts...)

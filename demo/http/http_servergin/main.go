@@ -11,23 +11,23 @@ import (
 func main() {
 	err := tracing.InitOnlyTracingLog("http_servergin")
 	if err != nil {
-		tracinglogger.Log().Fatal(err)
+		logger.Log().Fatal(err)
 	}
-	tracinglogger.SetLevel(tracinglogger.DebugLevel)
-	tracinglogger.MinReportCallerLevel(tracinglogger.InfoLevel)
+	logger.SetLevel(logger.DebugLevel)
+	logger.MinReportCallerLevel(logger.InfoLevel)
 	//gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(
 		tracinggin.TracingServerInterceptor(),
 		tracinggin.TracingLogInterceptor(tracinggin.SkipPath("/sayHello/*")))
 	router.GET("/sayHello", func(c *gin.Context) {
-		log := tracinglogger.ContextLog(c.Request.Context())
+		log := logger.ContextLog(c.Request.Context())
 		log.Infoln("hello:8084")
 		log.Debug(">>>>>>sayHello>>>>>>")
 		c.String(http.StatusOK, "sayHello")
 	})
 	router.POST("/info", func(c *gin.Context) {
-		log := tracinglogger.ContextLog(c.Request.Context())
+		log := logger.ContextLog(c.Request.Context())
 		log.Infoln("hello:8084", c.PostForm("info"))
 		log.Debug(">>>>>>info>>>>>>")
 		c.String(http.StatusOK, "info")
@@ -37,6 +37,6 @@ func main() {
 	})
 	err = router.Run(":8084")
 	if err != nil {
-		tracinglogger.Log().Fatal(err)
+		logger.Log().Fatal(err)
 	}
 }
