@@ -11,12 +11,12 @@ import (
 func main() {
 	err := tracing.InitOnlyTracingLog("http_server1")
 	if err != nil {
-		tracinglogger.Log().Fatal(err)
+		logger.Log().Fatal(err)
 	}
-	tracinglogger.SetLevel(tracinglogger.DebugLevel)
-	tracinglogger.SetReportCallerLevel(tracinglogger.InfoLevel)
+	logger.SetLevel(logger.DebugLevel)
+	logger.SetReportCallerLevel(logger.InfoLevel)
 	tracinghttp.HandleFunc("/sayHello", func(w http.ResponseWriter, r *http.Request) {
-		log := tracinglogger.ContextLog(r.Context())
+		log := logger.ContextLog(r.Context())
 		//log.Infof("uber-trace-id:%s", r.Header.Get("uber-trace-id"))
 		_, res, _ := tracinghttp.Get(r.Context(), http.DefaultClient, "http://localhost:8083/sayHello")
 		result, _ := ioutil.ReadAll(res.Body)
@@ -24,12 +24,12 @@ func main() {
 		res.Body.Close()
 	})
 	tracinghttp.HandleFunc("/info", func(w http.ResponseWriter, r *http.Request) {
-		log := tracinglogger.ContextLog(r.Context())
+		log := logger.ContextLog(r.Context())
 		//log.Infof("uber-trace-id:%s", r.Header.Get("uber-trace-id"))
 		result, _ := ioutil.ReadAll(r.Body)
 		defer r.Body.Close()
 		log.Infof("%s", result)
 		w.Write([]byte("ok"))
 	})
-	tracinglogger.Log().Fatal(http.ListenAndServe(":8082", nil))
+	logger.Log().Fatal(http.ListenAndServe(":8082", nil))
 }

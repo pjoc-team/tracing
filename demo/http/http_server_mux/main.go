@@ -10,7 +10,7 @@ import (
 type indexHandler struct{}
 
 func (ih *indexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log := tracinglogger.ContextLog(r.Context())
+	log := logger.ContextLog(r.Context())
 	log.Infoln("hello:8089")
 	w.Write([]byte("Welcome"))
 }
@@ -23,5 +23,5 @@ func main() {
 		Addr:    ":8089",
 		Handler: tracinghttp.TracingServerInterceptor(mux),
 	}
-	tracinglogger.Log().Fatal(s.ListenAndServe())
+	logger.Log().Fatal(s.ListenAndServe())
 }

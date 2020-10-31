@@ -28,7 +28,7 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log := tracinglogger.ContextLog(ctx)
+	log := logger.ContextLog(ctx)
 	log.Printf("Received: %v", in.GetName())
 	_, res, err := tracinghttp.Get(ctx, http.DefaultClient, "http://localhost:8084/sayHello")
 	if err != nil {
@@ -50,7 +50,7 @@ func main() {
 	var opts []grpc.ServerOption
 	opts = append(opts, grpc.UnaryInterceptor(tracinggrpc.TracingServerInterceptor()))
 	s := grpc.NewServer(opts...)
-	grpclog.SetLoggerV2(tracinglogger.Log())
+	grpclog.SetLoggerV2(logger.Log())
 	pb.RegisterGreeterServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

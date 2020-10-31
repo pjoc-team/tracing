@@ -19,7 +19,7 @@ func main() {
 	} else {
 		for i := 0; i < 10; i++ {
 			tracing.HandleFunc(func(ctx context.Context) {
-				log := tracinglogger.ContextLog(ctx)
+				log := logger.ContextLog(ctx)
 				log.Infof("start push_test %d", i)
 				tarceMqData := tracingmq.TracingMqProducer(ctx, "push_test", []byte(strconv.Itoa(i)))
 				byte, _ := json.Marshal(tarceMqData)

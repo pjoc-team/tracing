@@ -12,10 +12,10 @@ import (
 func main() {
 	err := tracing.InitOnlyTracingLog("http_server2")
 	if err != nil {
-		tracinglogger.Log().Fatal(err)
+		logger.Log().Fatal(err)
 	}
 	tracinghttp.HandleFunc("/sayHello", func(w http.ResponseWriter, r *http.Request) {
-		log := tracinglogger.ContextLog(r.Context())
+		log := logger.ContextLog(r.Context())
 		log.Infoln("hello:8083")
 
 		header := make(map[string]string)
@@ -26,5 +26,5 @@ func main() {
 		res.Body.Close()
 		w.Write([]byte("i am ok"))
 	})
-	tracinglogger.Log().Fatal(http.ListenAndServe(":8083", nil))
+	logger.Log().Fatal(http.ListenAndServe(":8083", nil))
 }

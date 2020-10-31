@@ -39,15 +39,15 @@ func (nw *nsqout) Write(p []byte) (n int, err error) {
 
 func main() {
 	tracing.InitOnlyTracingLog("output-nsq")
-	tracinglogger.SetFormatter(tracinglogger.FormatJson)
-	tracinglogger.SetOutput(&nsqout{
+	logger.SetFormatter(logger.FormatJson)
+	logger.SetOutput(&nsqout{
 		Topic: "test",
 		Host:  "127.0.0.1:4150",
 		lock:  &sync.Once{},
 	})
 	for i := 0; i < 10; i++ {
 		tracing.HandleFunc(func(ctx context.Context) {
-			log := tracinglogger.ContextLog(ctx)
+			log := logger.ContextLog(ctx)
 			log.Infof("output-nsq %d", i)
 		})
 	}

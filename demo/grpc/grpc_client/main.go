@@ -21,7 +21,7 @@ const (
 func main() {
 	tracing.InitOnlyTracingLog("grpc_client")
 	tracing.HandleFunc(func(ctx context.Context) {
-		log := tracinglogger.ContextLog(ctx)
+		log := logger.ContextLog(ctx)
 		var opts []grpc.DialOption
 		opts = append(opts, grpc.WithInsecure())
 		opts = append(opts, grpc.WithBlock())
