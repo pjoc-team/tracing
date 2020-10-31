@@ -30,10 +30,10 @@ func TracingServerInterceptor() gin.HandlerFunc {
 			ext.HTTPMethod.Set(span, c.Request.Method)
 			ext.HTTPUrl.Set(span, c.Request.URL.Path)
 			ext.Component.Set(span, "net/http")
-			requestID := c.Request.Header.Get(tracing.HttpHeaderKeyXRequestID)
+			requestID := c.Request.Header.Get(string(tracing.HttpHeaderKeyXRequestID))
 			newCtx := c.Request.Context()
 			if requestID != "" {
-				span.SetTag(tracing.SpanTagKeyHttpRequestID, requestID)
+				span.SetTag(string(tracing.SpanTagKeyHttpRequestID), requestID)
 				newCtx = context.WithValue(newCtx, tracing.SpanTagKeyHttpRequestID, requestID)
 			}
 			c.Request = c.Request.WithContext(
