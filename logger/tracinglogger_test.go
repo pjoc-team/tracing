@@ -6,6 +6,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	"github.com/pjoc-team/tracing/tracing"
+	"github.com/uber/jaeger-client-go"
 	"os"
 	"testing"
 )
@@ -216,4 +217,47 @@ func TestEntry_TraceID(t *testing.T) {
 	t1, _ = build(ctx, nil)
 
 	t1.Info(t1.TraceID())
+}
+
+func TestSpanContextLog(t *testing.T) {
+	if err := tracing.InitOnlyTracingLog("test"); err != nil {
+		panic(err.Error())
+	}
+	tracer, _ := jaeger.NewTracer("test", jaeger.SamplerV2Base{}, jaeger.NewInMemoryReporter())
+	opentracing.SetGlobalTracer(tracer)
+	span := opentracing.StartSpan("test")
+	ctx := opentracing.ContextWithSpan(context.Background(), span)
+	defer opentracing.SpanFromContext(ctx).Finish()
+	parentLog := ContextLog(ctx)
+	parentLog.Info("parent")
+
+	ctx, logger := SpanContextLog(ctx)
+	logger.Info("child")
+
+	ctx, logger = SpanContextLog(ctx)
+	logger.Info("grandson")
+
+	// output:
+	// 2021-01-31T17:18:43.279751+08:00 INFO [test,65ac9e65904a0038,65ac9e65904a0038,0,0][44644]parent
+	// 2021-01-31T17:18:43.279851+08:00 INFO [test,65ac9e65904a0038,3e44edacfccf7262,65ac9e65904a0038,0][44644]child
+	// 2021-01-31T17:18:43.279857+08:00 INFO [test,65ac9e65904a0038,3c453b7c80366692,3e44edacfccf7262,0][44644]grandson
+}
+
+func TestContextLog(t *testing.T) {
+	if err := tracing.InitOnlyTracingLog("test"); err != nil {
+		panic(err.Error())
+	}
+	tracer, _ := jaeger.NewTracer("test", jaeger.SamplerV2Base{}, jaeger.NewInMemoryReporter())
+	opentracing.SetGlobalTracer(tracer)
+	span := opentracing.StartSpan("test")
+	ctx := opentracing.ContextWithSpan(context.Background(), span)
+	defer opentracing.SpanFromContext(ctx).Finish()
+	parentLog := ContextLog(ctx)
+
+	parentLog.Info("parent") // same
+	parentLog.Info("child")  // same
+
+	// output:
+	// 2021-01-31T17:18:22.587258+08:00 INFO [test,2f4bbf2967a19f71,2f4bbf2967a19f71,0,0][44447]parent
+	// 2021-01-31T17:18:22.58735+08:00 INFO [test,2f4bbf2967a19f71,2f4bbf2967a19f71,0,0][44447]child
 }
