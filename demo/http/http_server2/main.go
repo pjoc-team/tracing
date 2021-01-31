@@ -19,7 +19,7 @@ func main() {
 		log.Infoln("hello:8083")
 
 		header := make(map[string]string)
-		header[tracing.HttpHeaderKeyXRequestID] = time.Now().Format("20060102150405")
+		header[string(tracing.HttpHeaderKeyXRequestID)] = time.Now().Format("20060102150405")
 		_, res, _ := tracinghttp.GetDo(r.Context(), http.DefaultClient, "http://localhost:8084/sayHello", header)
 		result, _ := ioutil.ReadAll(res.Body)
 		log.Infof("res:%s", result)

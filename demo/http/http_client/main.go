@@ -22,7 +22,7 @@ func main() {
 		log := logger.ContextLog(ctx)
 		log.Debug("start client")
 		header := make(map[string]string)
-		header[tracing.HttpHeaderKeyXRequestID] = time.Now().Format("20060102150405")
+		header[string(tracing.HttpHeaderKeyXRequestID)] = time.Now().Format("20060102150405")
 		sctx, _, _ := tracinghttp.GetDo(ctx, http.DefaultClient, "http://localhost:8082/sayHello", header)
 		_, res, err := tracinghttp.Post(ctx, http.DefaultClient, "http://localhost:8082/info", "application/json", bytes.NewReader([]byte("{\"info\":\"hello\"}")))
 		if err != nil {

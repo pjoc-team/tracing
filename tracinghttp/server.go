@@ -19,15 +19,15 @@ func HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)
 		} else {
 			span := opentracing.GlobalTracer().StartSpan(pattern, ext.RPCServerOption(spanCtx))
 			newCtx = opentracing.ContextWithSpan(newCtx, span)
-			requestID := r.Header.Get(tracing.HttpHeaderKeyXRequestID)
+			requestID := r.Header.Get(string(string(tracing.HttpHeaderKeyXRequestID)))
 			if requestID != "" {
-				span.SetTag(tracing.SpanTagKeyHttpRequestID, requestID)
+				span.SetTag(string(tracing.SpanTagKeyHttpRequestID), requestID)
 				newCtx = context.WithValue(newCtx, tracing.SpanTagKeyHttpRequestID, requestID)
-				w.Header().Add(tracing.HttpHeaderKeyXRequestID, requestID)
+				w.Header().Add(string(tracing.HttpHeaderKeyXRequestID), requestID)
 			}
 			defer span.Finish()
 		}
-		w.Header().Add(tracing.TraceID, util.GetTraceID(newCtx))
+		w.Header().Add(string(tracing.TraceID), util.GetTraceID(newCtx))
 		handler(w, r.WithContext(newCtx))
 	})
 }
@@ -41,9 +41,9 @@ func TracingServerInterceptor(h http.Handler) http.Handler {
 		} else {
 			span := opentracing.GlobalTracer().StartSpan(r.RequestURI, ext.RPCServerOption(spanCtx))
 			newCtx = opentracing.ContextWithSpan(newCtx, span)
-			requestID := r.Header.Get(tracing.HttpHeaderKeyXRequestID)
+			requestID := r.Header.Get(string(tracing.HttpHeaderKeyXRequestID))
 			if requestID != "" {
-				span.SetTag(tracing.SpanTagKeyHttpRequestID, requestID)
+				span.SetTag(string(tracing.SpanTagKeyHttpRequestID), requestID)
 				newCtx = context.WithValue(newCtx, tracing.SpanTagKeyHttpRequestID, requestID)
 			}
 			defer span.Finish()
