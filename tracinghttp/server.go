@@ -35,9 +35,10 @@ func HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)
 func TracingServerInterceptor(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		newCtx := r.Context()
+		log := tracinglogger.ContextLog(newCtx)
 		spanCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
 		if err != nil && err != opentracing.ErrSpanContextNotFound {
-			tracinglogger.Log().Errorf("extract from header err: %v", err)
+			log.Errorf("extract from header err: %v", err)
 		} else {
 			span := opentracing.GlobalTracer().StartSpan(r.RequestURI, ext.RPCServerOption(spanCtx))
 			newCtx = opentracing.ContextWithSpan(newCtx, span)
@@ -46,8 +47,14 @@ func TracingServerInterceptor(h http.Handler) http.Handler {
 				span.SetTag(string(tracing.SpanTagKeyHttpRequestID), requestID)
 				newCtx = context.WithValue(newCtx, tracing.SpanTagKeyHttpRequestID, requestID)
 			}
+			log = tracinglogger.ContextLog(newCtx)
 			defer span.Finish()
 		}
+
+		if log.IsDebugEnabled() {
+			log.Debugf("header: %v", r.Header)
+		}
+
 		h.ServeHTTP(w, r.WithContext(newCtx))
 	})
 }

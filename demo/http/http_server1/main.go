@@ -19,6 +19,9 @@ func main() {
 		log := logger.ContextLog(r.Context())
 		//log.Infof("uber-trace-id:%s", r.Header.Get("uber-trace-id"))
 		_, res, _ := tracinghttp.Get(r.Context(), http.DefaultClient, "http://localhost:8083/sayHello")
+		if res == nil || res.Body == nil {
+			return
+		}
 		result, _ := ioutil.ReadAll(res.Body)
 		log.Debug("res:%s", result)
 		res.Body.Close()

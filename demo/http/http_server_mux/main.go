@@ -17,6 +17,7 @@ func (ih *indexHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	tracing.InitOnlyTracingLog("http_server_mux")
+	logger.SetLevel(logger.DebugLevel)
 	mux := http.NewServeMux()
 	mux.Handle("/index", &indexHandler{})
 	s := &http.Server{

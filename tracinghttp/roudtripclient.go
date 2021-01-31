@@ -25,8 +25,12 @@ func (h *tracingClient) RoundTrip(request *http.Request) (*http.Response, error)
 		opentracing.HTTPHeaders,
 		opentracing.HTTPHeadersCarrier(request.Header),
 	)
+	log := tracinglogger.ContextLog(newCtx)
 	if err != nil {
-		tracinglogger.ContextLog(newCtx).Errorf("inject to HTTPHeaders err %v", err)
+		log.Errorf("inject to HTTPHeaders err %v", err)
+	}
+	if log.IsDebugEnabled() {
+		log.Debugf("header: %v", request.Header)
 	}
 
 	req := request.WithContext(newCtx)
