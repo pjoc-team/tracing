@@ -55,7 +55,7 @@ func ContextLog(ctx context.Context) Logger {
 	return getFactory().buildLogger(buildTraceInfo(ctx))
 }
 
-// SpanContextLog 获取带有traceing信息的Logger对象，并且返回新context
+// SpanContextLog 获取带有tracing信息的Logger对象，并且返回新context
 func SpanContextLog(ctx context.Context) (context.Context, Logger) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, operation)
 	carriers := opentracing.TextMapCarrier{}

@@ -231,6 +231,10 @@ func TestSpanContextLog(t *testing.T) {
 	parentLog := ContextLog(ctx)
 	parentLog.Info("parent")
 
+	// force sampling
+	subSpan := opentracing.SpanFromContext(ctx)
+	ext.SamplingPriority.Set(subSpan, 1)
+
 	ctx, logger := SpanContextLog(ctx)
 	logger.Info("child")
 
